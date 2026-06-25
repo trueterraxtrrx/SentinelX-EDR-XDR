@@ -1,0 +1,39 @@
+- name: PowerShell Obfuscation
+  event: process_create
+  when:
+    process: powershell.exe
+    contains_any:
+      - base64
+      - -enc
+      - FromBase64String
+      - IEX
+  score: 80
+  severity: high
+
+- name: Suspicious Registry Run Key
+  event: registry_set
+  when:
+    contains_any:
+      - HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run
+      - HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run
+  score: 70
+  severity: high
+
+- name: Shell Downloads Remote Script
+  event: shell_command
+  when:
+    contains_any:
+      - curl
+      - wget
+      - Invoke-WebRequest
+      - iwr
+  score: 45
+  severity: medium
+
+- name: Rare External Connection
+  event: network_connect
+  when:
+    field_equals:
+      direction: outbound
+  score: 25
+  severity: low
