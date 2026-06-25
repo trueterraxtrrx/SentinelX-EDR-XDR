@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Activity, AlertTriangle, Globe2, Network, RefreshCw, Server, ShieldCheck, TerminalSquare } from "lucide-react";
 import "./styles.css";
@@ -136,8 +136,14 @@ function App() {
   const [alerts, setAlerts] = useState([]);
   const [timeline, setTimeline] = useState([]);
   const [selectedHost, setSelectedHost] = useState("");
+  const selectedHostRef = useRef("");
   const [tree, setTree] = useState(null);
   const [error, setError] = useState("");
+
+  function selectHost(host) {
+    selectedHostRef.current = host;
+    setSelectedHost(host);
+  }
 
   async function refresh() {
     try {
@@ -150,8 +156,9 @@ function App() {
       setHosts(hostData);
       setAlerts(alertData);
       setTimeline(timelineData);
-      const nextHost = selectedHost || hostData[0]?.host || "";
-      setSelectedHost(nextHost);
+      const knownHosts = new Set(hostData.map((host) => host.host));
+      const nextHost = knownHosts.has(selectedHostRef.current) ? selectedHostRef.current : hostData[0]?.host || "";
+      selectHost(nextHost);
       if (nextHost) setTree(await getJson(`/process-tree/${encodeURIComponent(nextHost)}`));
     } catch (err) {
       setError(err.message);
@@ -195,7 +202,7 @@ function App() {
       </section>
 
       <section className="grid">
-        <HostsMap hosts={hosts} selected={selectedHost} onSelect={setSelectedHost} />
+        <HostsMap hosts={hosts} selected={selectedHost} onSelect={selectHost} />
         <AlertsFeed alerts={alerts} />
         <Timeline items={timeline} />
         <ProcessTree tree={tree} selected={selectedHost} />

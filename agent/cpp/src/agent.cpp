@@ -11,7 +11,10 @@ Agent::Agent(std::string host, std::string gateway_url, std::chrono::seconds int
 }
 
 void Agent::run_once() {
-  auto events = collectors_.poll();
+  auto events = queue_.drain();
+  auto current_events = collectors_.poll();
+  events.insert(events.end(), current_events.begin(), current_events.end());
+
   if (!client_.post_events(events)) {
     queue_.append(events);
     std::cerr << "gateway unavailable, queued " << events.size() << " events\n";

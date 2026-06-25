@@ -13,3 +13,7 @@ add_executable(sentinelx-agent
 )
 
 target_include_directories(sentinelx-agent PRIVATE src)
+
+if(WIN32)
+  target_link_libraries(sentinelx-agent PRIVATE winhttp)
+endif()
