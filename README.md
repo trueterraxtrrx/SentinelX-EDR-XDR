@@ -184,7 +184,7 @@ API Backend:
 - `GET /process-tree/{host}` - дерево процессов по host
 - `GET /timeline` - временная лента событий и алертов
 
-## Senior-фишки в проекте
+## Ключевые инженерные решения
 
 ### Mutual TLS
 
