@@ -7,6 +7,7 @@ from typing import Any
 
 import psycopg
 import yaml
+from psycopg.types.json import Jsonb
 from redis import Redis
 
 
@@ -80,7 +81,7 @@ def store_event(conn: psycopg.Connection, event: dict[str, Any]) -> int:
         )
         cur.execute(
             "INSERT INTO events(ts, host, event, data) VALUES (%s, %s, %s, %s) RETURNING id",
-            (ts, host, event["event"], json.dumps(data)),
+            (ts, host, event["event"], Jsonb(data)),
         )
         event_id = cur.fetchone()[0]
 
@@ -124,7 +125,7 @@ def store_alert(conn: psycopg.Connection, event: dict[str, Any], event_id: int, 
                 rule.get("severity", "medium"),
                 score,
                 event_id,
-                json.dumps({"event": event, "rule": rule}),
+                Jsonb({"event": event, "rule": rule}),
             ),
         )
         cur.execute(

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <utility>
 
 HttpClient::HttpClient(std::string gateway_url) : gateway_url_(std::move(gateway_url)) {}
 

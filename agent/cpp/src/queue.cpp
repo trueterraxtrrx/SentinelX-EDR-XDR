@@ -1,6 +1,7 @@
 #include "queue.hpp"
 
 #include <fstream>
+#include <utility>
 
 OfflineQueue::OfflineQueue(std::filesystem::path path) : path_(std::move(path)) {}
 

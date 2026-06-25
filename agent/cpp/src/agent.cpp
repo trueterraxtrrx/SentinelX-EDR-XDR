@@ -1,6 +1,7 @@
 #include "agent.hpp"
 
 #include <iostream>
+#include <utility>
 
 Agent::Agent(std::string host, std::string gateway_url, std::chrono::seconds interval)
     : collectors_(std::move(host)),
