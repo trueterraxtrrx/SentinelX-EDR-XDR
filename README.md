@@ -33,15 +33,11 @@ Each service is independently runnable and API-first. Future KRYNEX Nexus integr
 
 ## Screenshots
 
-Expected screenshots live in `docs/screenshots/`:
+![SentinelX dashboard](assets/screenshots/dashboard.png)
 
-- `dashboard.png`
-- `list-view.png`
-- `detail-view.png`
-- `settings.png`
-- `api-docs.png`
-
-See `docs/screenshots/README.md` for capture instructions.
+| List view | Detail view | Settings |
+| --- | --- | --- |
+| ![SentinelX list view](assets/screenshots/list-view.png) | ![SentinelX detail view](assets/screenshots/detail-view.png) | ![SentinelX settings](assets/screenshots/settings.png) |
 
 ## Quick Start
 
