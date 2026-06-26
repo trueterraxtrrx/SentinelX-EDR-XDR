@@ -66,12 +66,12 @@ function AlertsFeed({ alerts }) {
           <article className={`alert severity-${alert.severity}`} key={alert.id}>
             <div>
               <strong>{alert.rule_name}</strong>
-              <span>{alert.host} · {new Date(alert.ts).toLocaleString()}</span>
+              <span>{alert.host} - {new Date(alert.ts).toLocaleString()}</span>
             </div>
             <b>{alert.score}</b>
           </article>
         ))}
-        {alerts.length === 0 && <p className="empty">Пока нет алертов.</p>}
+        {alerts.length === 0 && <p className="empty">No data yet.</p>}
       </div>
     </section>
   );
@@ -82,7 +82,7 @@ function Timeline({ items }) {
     <section className="panel">
       <div className="panel-title">
         <Activity size={18} />
-        <h2>Timeline атак</h2>
+        <h2>Attack timeline</h2>
       </div>
       <div className="timeline">
         {items.map((item, index) => (
@@ -92,7 +92,7 @@ function Timeline({ items }) {
             <span>{item.host}</span>
           </div>
         ))}
-        {items.length === 0 && <p className="empty">События появятся после POST /events.</p>}
+        {items.length === 0 && <p className="empty">No data yet.</p>}
       </div>
     </section>
   );
@@ -122,11 +122,11 @@ function ProcessTree({ tree, selected }) {
         <Network size={18} />
         <h2>Process tree</h2>
       </div>
-      <div className="tree-host">{selected || "host не выбран"}</div>
+      <div className="tree-host">{selected || "No host selected"}</div>
       <ul className="process-tree">
         {(tree?.processes || []).map((node) => <TreeNode node={node} key={node.pid} />)}
       </ul>
-      {(!tree || tree.processes?.length === 0) && <p className="empty">Нет процессов для выбранного host.</p>}
+      {(!tree || tree.processes?.length === 0) && <p className="empty">No data yet.</p>}
     </section>
   );
 }
@@ -188,12 +188,12 @@ function App() {
             <span>EDR/XDR SOC Console</span>
           </div>
         </div>
-        <button className="icon-button" onClick={refresh} title="Обновить">
+        <button className="icon-button" onClick={refresh} title="Refresh">
           <RefreshCw size={18} />
         </button>
       </header>
 
-      {error && <div className="error">API недоступен: {error}</div>}
+      {error && <div className="error">API unavailable: {error}</div>}
 
       <section className="stats-row">
         <Stat icon={Server} label="Hosts" value={hosts.length} />
