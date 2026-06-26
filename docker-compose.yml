@@ -9,7 +9,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-sentinelx}
       POSTGRES_USER: ${POSTGRES_USER:-sentinelx}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sentinelx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_only_change_me}
     ports:
       - "5432:5432"
     volumes:
@@ -58,6 +58,7 @@ services:
     build: ./dashboard
     environment:
       VITE_API_BASE_URL: ${API_BASE_URL:-http://localhost:8080}
+      VITE_DEMO_MODE: ${DEMO_MODE:-true}
     depends_on:
       - api-backend
     ports:

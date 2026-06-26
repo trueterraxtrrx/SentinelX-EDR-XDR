@@ -1,4 +1,6 @@
 .env
+.env.*
+!.env.example
 node_modules/
 dist/
 build/
@@ -6,4 +8,12 @@ build/
 *.jsonl
 __pycache__/
 .pytest_cache/
+venv/
+.venv/
+.next/
+*.db
+logs/
+uploads/
+coverage/
+.cache/
 .DS_Store

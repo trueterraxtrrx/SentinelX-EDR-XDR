@@ -4,6 +4,24 @@ import { Activity, AlertTriangle, Globe2, Network, RefreshCw, Server, ShieldChec
 import "./styles.css";
 
 const API = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE !== "false";
+const demoNow = new Date().toISOString();
+const demoData = {
+  "/hosts": [
+    { host: "edge-01", risk_score: 82 },
+    { host: "workstation-14", risk_score: 48 },
+    { host: "db-core-02", risk_score: 64 }
+  ],
+  "/alerts": [
+    { id: "alert-1", rule_name: "Suspicious parent process", host: "edge-01", severity: "high", score: 82, ts: demoNow },
+    { id: "alert-2", rule_name: "Unusual outbound connection", host: "db-core-02", severity: "medium", score: 64, ts: demoNow }
+  ],
+  "/timeline": [
+    { ts: demoNow, type: "alert", kind: "process_spawn", host: "edge-01" },
+    { ts: demoNow, type: "network", kind: "outbound_connection", host: "db-core-02" },
+    { ts: demoNow, type: "event", kind: "file_write", host: "workstation-14" }
+  ]
+};
 
 function riskLabel(score) {
   if (score >= 75) return "critical";
@@ -13,6 +31,17 @@ function riskLabel(score) {
 }
 
 async function getJson(path) {
+  if (DEMO_MODE) {
+    if (path.startsWith("/process-tree/")) {
+      return {
+        processes: [
+          { pid: 420, name: "services.exe", children: [{ pid: 942, name: "powershell.exe", children: [{ pid: 1204, name: "curl.exe", children: [] }] }] },
+          { pid: 88, name: "agent.exe", children: [] }
+        ]
+      };
+    }
+    return demoData[path] || [];
+  }
   const response = await fetch(`${API}${path}`);
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
   return response.json();
@@ -188,9 +217,12 @@ function App() {
             <span>EDR/XDR SOC Console</span>
           </div>
         </div>
-        <button className="icon-button" onClick={refresh} title="Refresh">
-          <RefreshCw size={18} />
-        </button>
+        <div className="topbar-actions">
+          <span className="demo-badge">Demo Mode</span>
+          <button className="icon-button" onClick={refresh} title="Refresh">
+            <RefreshCw size={18} />
+          </button>
+        </div>
       </header>
 
       {error && <div className="error">API unavailable: {error}</div>}

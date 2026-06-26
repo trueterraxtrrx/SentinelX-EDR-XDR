@@ -37,6 +37,20 @@ main {
   justify-content: space-between;
   margin-bottom: 18px;
 }
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.demo-badge {
+  border: 1px solid rgba(45, 212, 191, 0.4);
+  border-radius: 6px;
+  background: #18212f;
+  color: #2dd4bf;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
 
 .brand {
   display: flex;
