@@ -20,3 +20,4 @@ void Agent::run_once() {
     std::cerr << "gateway unavailable, queued " << events.size() << " events\n";
   }
 }
+// Project version: SentinelX V1.2

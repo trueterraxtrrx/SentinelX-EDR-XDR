@@ -67,3 +67,4 @@ services:
 volumes:
   postgres-data:
   clickhouse-data:
+# Project version: SentinelX V1.2

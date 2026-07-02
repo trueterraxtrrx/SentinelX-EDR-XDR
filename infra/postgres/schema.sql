@@ -45,3 +45,4 @@ CREATE TABLE IF NOT EXISTS process_tree (
   last_seen TIMESTAMPTZ NOT NULL,
   UNIQUE(host, pid)
 );
+-- Project version: SentinelX V1.2

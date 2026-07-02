@@ -1,4 +1,4 @@
-# SentinelX V1.0
+# SentinelX V1.2
 
 Defensive EDR/XDR telemetry pipeline and SOC dashboard for endpoint events, alerts and process context.
 
@@ -85,6 +85,7 @@ SentinelX is defensive-only. It is for authorized telemetry, detection and SOC r
 
 ## Roadmap
 
+- Add V1.2 demo event fixtures and hosted dashboard readiness notes.
 - Add richer public demo event fixtures.
 - Add host detail and incident queue screens.
 - Add read-only hosted dashboard mode.
@@ -98,3 +99,4 @@ SentinelX provides endpoint telemetry for the broader KRYNEX Labs portfolio alon
 ## License
 
 MIT.
+<!-- Project version: SentinelX V1.2 -->

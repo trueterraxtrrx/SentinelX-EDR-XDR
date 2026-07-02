@@ -1,4 +1,4 @@
-# SentinelX V1.0 Deployment Notes
+# SentinelX V1.2 Deployment Notes
 
 This public version is prepared for local/demo hosting, not production operation.
 
@@ -30,3 +30,10 @@ cmake --build build
 - Set `API_BASE_URL` to the hosted API origin.
 - Do not deploy real endpoint telemetry from unmanaged devices.
 - Keep PostgreSQL/ClickHouse data private.
+
+## V1.2 Roadmap Readiness
+
+- Keep hosted dashboards read-only for public review.
+- Use synthetic endpoint event fixtures only.
+- Document host-detail and incident-queue gaps before private deployment.
+<!-- Project version: SentinelX V1.2 -->

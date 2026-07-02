@@ -142,3 +142,4 @@ if __name__ == "__main__":
     import pytest
 
     raise SystemExit(pytest.main([os.fspath(Path(__file__).resolve())]))
+# Project version: SentinelX V1.2

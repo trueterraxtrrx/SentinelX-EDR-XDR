@@ -13,3 +13,4 @@ class Collectors {
  private:
   std::string host_;
 };
+// Project version: SentinelX V1.2

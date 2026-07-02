@@ -165,3 +165,4 @@ std::vector<Event> OfflineQueue::drain() const {
   std::remove(path_.string().c_str());
   return events;
 }
+// Project version: SentinelX V1.2

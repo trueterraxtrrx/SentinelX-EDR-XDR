@@ -25,3 +25,4 @@ CREATE TABLE IF NOT EXISTS sentinelx.alerts
 ENGINE = MergeTree
 PARTITION BY toYYYYMM(ts)
 ORDER BY (host, severity, ts);
+-- Project version: SentinelX V1.2
