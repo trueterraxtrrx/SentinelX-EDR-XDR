@@ -17,4 +17,4 @@ class Agent {
   HttpClient client_;
   OfflineQueue queue_;
 };
-// Project version: SentinelX V1.2
+// Project version: SentinelX V1.3

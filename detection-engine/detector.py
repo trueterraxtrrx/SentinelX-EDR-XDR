@@ -168,4 +168,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-# Project version: SentinelX V1.2
+# Project version: SentinelX V1.3
