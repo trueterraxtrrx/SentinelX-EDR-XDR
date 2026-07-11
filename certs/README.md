@@ -13,4 +13,4 @@ Production-схема:
 7. На gateway проверять, что `host` в payload соответствует client identity.
 
 Важно: header с identity должен выставляться только reverse proxy, а внешний клиент не должен иметь возможности подделать его напрямую.
-<!-- Project version: SentinelX V1.3 -->
+<!-- Project version: SentinelX V1.4 -->

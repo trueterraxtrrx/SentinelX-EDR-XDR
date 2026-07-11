@@ -7,4 +7,4 @@ COPY app.py .
 
 EXPOSE 8080
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
-# Project version: SentinelX V1.3
+# Project version: SentinelX V1.4
