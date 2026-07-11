@@ -143,4 +143,4 @@ bool HttpClient::post_events(const std::vector<Event>& events) const {
   return true;
 #endif
 }
-// Project version: SentinelX V1.4
+// Project version: SentinelX V1.5

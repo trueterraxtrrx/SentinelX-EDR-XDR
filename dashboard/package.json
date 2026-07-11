@@ -1,6 +1,6 @@
 {
   "name": "sentinelx-dashboard",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,4 +17,4 @@
   },
   "devDependencies": {}
 }
-# Project version: SentinelX V1.4
+# Project version: SentinelX V1.5

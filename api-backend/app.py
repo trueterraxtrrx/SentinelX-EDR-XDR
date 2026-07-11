@@ -10,7 +10,7 @@ from psycopg.rows import dict_row
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sentinelx:sentinelx@localhost:5432/sentinelx")
 
-app = FastAPI(title="SentinelX API Backend", version="1.4.0")
+app = FastAPI(title="SentinelX API Backend", version="1.5.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -108,4 +108,4 @@ def timeline(limit: int = 100) -> list[dict[str, Any]]:
         for alert in alert_rows
     ]
     return sorted(merged, key=lambda item: item["ts"], reverse=True)[: min(limit, 200)]
-# Project version: SentinelX V1.4
+# Project version: SentinelX V1.5

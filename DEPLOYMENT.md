@@ -1,4 +1,4 @@
-# SentinelX V1.4 Deployment Notes
+# SentinelX V1.5 Deployment Notes
 
 This public version is prepared for local/demo hosting, not production operation.
 
@@ -36,4 +36,4 @@ cmake --build build
 - Keep hosted dashboards read-only for public review.
 - Use synthetic endpoint event fixtures only.
 - Document host-detail and incident-queue gaps before private deployment.
-<!-- Project version: SentinelX V1.4 -->
+<!-- Project version: SentinelX V1.5 -->
