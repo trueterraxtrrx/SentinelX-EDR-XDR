@@ -12,4 +12,4 @@ logs:
 agent:
 	cmake -S agent/cpp -B agent/cpp/build
 	cmake --build agent/cpp/build
-# Project version: SentinelX V1.5
+# Project version: SentinelX V1.6

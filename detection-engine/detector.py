@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +18,9 @@ EVENT_STREAM = os.getenv("EVENT_STREAM", "sentinelx.events")
 CONSUMER_GROUP = os.getenv("CONSUMER_GROUP", "detectors")
 CONSUMER_NAME = os.getenv("CONSUMER_NAME", "detector-1")
 RULES_PATH = Path(os.getenv("RULES_PATH", "rules/default.yml"))
+CPP_RULE_MATCHER_ENV = "SENTINELX_CPP_RULE_MATCHER"
+CPP_FORCE_ENV = "SENTINELX_FORCE_CPP"
+CPP_HAYSTACK_THRESHOLD_BYTES = 4096
 
 
 def load_rules() -> list[dict[str, Any]]:
@@ -32,7 +36,56 @@ def haystack(event: dict[str, Any]) -> str:
     return json.dumps(event.get("data", {}), ensure_ascii=False).lower()
 
 
+def _cpp_rule_matcher_path() -> Path:
+    suffix = ".exe" if os.name == "nt" else ""
+    return Path(__file__).resolve().parent / "cpp" / "rule_matcher" / f"sentinelx-rule-matcher{suffix}"
+
+
+def _matches_rule_cpp(event: dict[str, Any], rule: dict[str, Any]) -> bool | None:
+    configured = os.getenv(CPP_RULE_MATCHER_ENV)
+    binary = Path(configured) if configured else _cpp_rule_matcher_path()
+    if not binary.exists():
+        return None
+    data = event.get("data", {})
+    when = rule.get("when", {})
+    event_haystack = haystack(event)
+    if os.getenv(CPP_FORCE_ENV) != "1" and len(event_haystack.encode("utf-8")) < CPP_HAYSTACK_THRESHOLD_BYTES:
+        return None
+    pairs = [
+        f"{str(expected)}\x1f{str(data.get(key, ''))}"
+        for key, expected in (when.get("field_equals") or {}).items()
+    ]
+    needles = "\x1f".join(str(item) for item in when.get("contains_any", [])) or "-"
+    payload = "\n".join(
+        [
+            rule.get("event") or "-",
+            event.get("event") or "",
+            str(when.get("process") or "-"),
+            str(data.get("name", "")),
+            needles,
+            event_haystack,
+            *pairs,
+        ]
+    )
+    try:
+        completed = subprocess.run(
+            [str(binary)],
+            capture_output=True,
+            check=True,
+            input=payload,
+            text=True,
+            timeout=5,
+        )
+        return completed.stdout.strip() == "1"
+    except Exception:
+        return None
+
+
 def matches_rule(event: dict[str, Any], rule: dict[str, Any]) -> bool:
+    cpp_result = _matches_rule_cpp(event, rule)
+    if cpp_result is not None:
+        return cpp_result
+
     if rule.get("event") and rule["event"] != event.get("event"):
         return False
 
@@ -140,12 +193,18 @@ def store_alert(conn: psycopg.Connection, event: dict[str, Any], event_id: int, 
 
 def main() -> None:
     rules = load_rules()
-    redis = Redis.from_url(REDIS_URL, decode_responses=True)
+    redis = Redis.from_url(
+        REDIS_URL,
+        decode_responses=True,
+        health_check_interval=30,
+        socket_connect_timeout=3,
+        socket_timeout=10,
+    )
     ensure_group(redis)
 
     while True:
         try:
-            with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+            with psycopg.connect(DATABASE_URL, autocommit=True, connect_timeout=3) as conn:
                 messages = redis.xreadgroup(
                     CONSUMER_GROUP,
                     CONSUMER_NAME,
@@ -168,4 +227,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-# Project version: SentinelX V1.5
+# Project version: SentinelX V1.6

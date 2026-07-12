@@ -10,8 +10,14 @@ from redis import Redis
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 EVENT_STREAM = os.getenv("EVENT_STREAM", "sentinelx.events")
 
-redis = Redis.from_url(REDIS_URL, decode_responses=True)
-app = FastAPI(title="SentinelX Ingestion Gateway", version="1.5.0")
+redis = Redis.from_url(
+    REDIS_URL,
+    decode_responses=True,
+    health_check_interval=30,
+    socket_connect_timeout=3,
+    socket_timeout=5,
+)
+app = FastAPI(title="SentinelX Ingestion Gateway", version = "1.6.0")
 
 
 class EndpointEvent(BaseModel):
@@ -50,4 +56,4 @@ def ingest(batch: EventBatch, x_agent_identity: str | None = Header(default=None
         stream_ids.append(stream_id)
 
     return {"accepted": len(stream_ids), "stream_ids": stream_ids}
-# Project version: SentinelX V1.5
+# Project version: SentinelX V1.6

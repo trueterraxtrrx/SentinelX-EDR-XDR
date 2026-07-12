@@ -44,4 +44,4 @@ inline std::string to_json(const Event& event) {
   out << "}}";
   return out.str();
 }
-// Project version: SentinelX V1.5
+// Project version: SentinelX V1.6

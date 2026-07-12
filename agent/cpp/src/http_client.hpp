@@ -13,4 +13,4 @@ class HttpClient {
  private:
   std::string gateway_url_;
 };
-// Project version: SentinelX V1.5
+// Project version: SentinelX V1.6

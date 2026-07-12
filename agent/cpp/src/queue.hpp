@@ -14,4 +14,4 @@ class OfflineQueue {
  private:
   std::filesystem::path path_;
 };
-// Project version: SentinelX V1.5
+// Project version: SentinelX V1.6

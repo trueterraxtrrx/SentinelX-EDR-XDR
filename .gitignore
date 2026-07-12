@@ -18,4 +18,6 @@ coverage/
 .cache/
 .DS_Store
 docs/
-# Project version: SentinelX V1.5
+detection-engine/cpp/**/build/
+detection-engine/cpp/**/*.exe
+# Project version: SentinelX V1.6

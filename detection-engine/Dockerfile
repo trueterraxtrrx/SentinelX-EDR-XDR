@@ -7,4 +7,4 @@ COPY detector.py .
 COPY rules ./rules
 
 CMD ["python", "detector.py"]
-# Project version: SentinelX V1.5
+# Project version: SentinelX V1.6

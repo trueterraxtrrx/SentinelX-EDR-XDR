@@ -9,11 +9,22 @@ from psycopg.rows import dict_row
 
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://sentinelx:sentinelx@localhost:5432/sentinelx")
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+DATABASE_CONNECT_TIMEOUT_SECONDS = int(os.getenv("DATABASE_CONNECT_TIMEOUT_SECONDS", "3"))
 
-app = FastAPI(title="SentinelX API Backend", version="1.5.0")
+
+def csv_env(name: str, default: str) -> list[str]:
+    return [item.strip() for item in os.getenv(name, default).split(",") if item.strip()]
+
+
+CORS_ORIGINS = csv_env("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+if ENVIRONMENT.lower() in {"production", "prod"} and "*" in CORS_ORIGINS:
+    raise RuntimeError("Wildcard CORS origins are not allowed in production")
+
+app = FastAPI(title="SentinelX API Backend", version = "1.6.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,7 +32,7 @@ app.add_middleware(
 
 
 def rows(query: str, params: tuple[Any, ...] = ()) -> list[dict[str, Any]]:
-    with psycopg.connect(DATABASE_URL) as conn:
+    with psycopg.connect(DATABASE_URL, connect_timeout=DATABASE_CONNECT_TIMEOUT_SECONDS) as conn:
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, params)
             result = cur.fetchall()
@@ -108,4 +119,4 @@ def timeline(limit: int = 100) -> list[dict[str, Any]]:
         for alert in alert_rows
     ]
     return sorted(merged, key=lambda item: item["ts"], reverse=True)[: min(limit, 200)]
-# Project version: SentinelX V1.5
+# Project version: SentinelX V1.6

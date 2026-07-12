@@ -22,4 +22,4 @@ std::vector<Event> Collectors::poll() {
       {ts, host_, "tamper_check", {{"status", "ok"}, {"self_hash", "demo"}}},
   };
 }
-// Project version: SentinelX V1.5
+// Project version: SentinelX V1.6
