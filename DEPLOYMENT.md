@@ -38,3 +38,4 @@ cmake --build build
 - Document host-detail and incident-queue gaps before private deployment.
 <!-- Project version: SentinelX V1.6 -->
 
+

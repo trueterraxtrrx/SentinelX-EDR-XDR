@@ -15,3 +15,4 @@ Production-схема:
 Важно: header с identity должен выставляться только reverse proxy, а внешний клиент не должен иметь возможности подделать его напрямую.
 <!-- Project version: SentinelX V1.6 -->
 
+
