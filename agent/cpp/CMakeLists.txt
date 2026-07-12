@@ -18,3 +18,4 @@ if(WIN32)
   target_link_libraries(sentinelx-agent PRIVATE winhttp)
 endif()
 # Project version: SentinelX V1.6
+

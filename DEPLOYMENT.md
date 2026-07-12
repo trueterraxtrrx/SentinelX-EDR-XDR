@@ -37,3 +37,4 @@ cmake --build build
 - Use synthetic endpoint event fixtures only.
 - Document host-detail and incident-queue gaps before private deployment.
 <!-- Project version: SentinelX V1.6 -->
+

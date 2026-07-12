@@ -21,3 +21,4 @@ docs/
 detection-engine/cpp/**/build/
 detection-engine/cpp/**/*.exe
 # Project version: SentinelX V1.6
+

@@ -57,3 +57,4 @@ def ingest(batch: EventBatch, x_agent_identity: str | None = Header(default=None
 
     return {"accepted": len(stream_ids), "stream_ids": stream_ids}
 # Project version: SentinelX V1.6
+
