@@ -1,5 +1,4 @@
-# SentinelX V1.6
-
+# SentinelX V1.0
 Defensive EDR/XDR telemetry pipeline and SOC dashboard for endpoint events, alerts and process context.
 
 ## Product Overview
@@ -85,15 +84,19 @@ SentinelX is defensive-only. It is for authorized telemetry, detection and SOC r
 
 ## Roadmap
 
-- Expanded V1.5 roadmap notes for Sigma-style rule imports and Nexus registry integration readiness.
-- Expanded V1.4 roadmap notes for host detail, process context, and incident queue planning.
-- Expanded V1.3 roadmap notes for richer endpoint demo fixtures and hosted dashboard guardrails.
-- Add V1.2 demo event fixtures and hosted dashboard readiness notes.
-- Add richer public demo event fixtures.
-- Add host detail and incident queue screens.
-- Add read-only hosted dashboard mode.
-- Add Sigma-style rule import planning.
-- Add KRYNEX Nexus product registry integration later.
+### Already implemented
+
+- Safe C++ endpoint agent skeleton and service-based telemetry pipeline.
+- C++ rule matcher path with forced-path smoke coverage and Python fallback.
+- Gateway/API health checks, Redis/DB timeout hardening and production CORS guardrails.
+- Smoke tests covering core public demo services.
+
+### Will be implemented
+
+- Richer endpoint demo fixtures and hosted dashboard guardrails.
+- Host detail, process context and incident queue screens.
+- Sigma-style rule import planning and validation workflow.
+- KRYNEX Nexus product registry integration after the demo surface is stable.
 
 ## KRYNEX Ecosystem
 
@@ -102,5 +105,5 @@ SentinelX provides endpoint telemetry for the broader KRYNEX Labs portfolio alon
 ## License
 
 MIT.
-<!-- Project version: SentinelX V1.6 -->
+<!-- Project version: SentinelX V1.0 -->
 
