@@ -7,3 +7,4 @@ target_compile_features(sentinelx-rule-matcher PRIVATE cxx_std_17)
 
 
 
+

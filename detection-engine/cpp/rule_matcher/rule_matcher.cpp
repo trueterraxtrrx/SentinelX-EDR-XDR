@@ -77,9 +77,18 @@ int main(int argc, char**) {
     while (std::getline(std::cin, pair)) {
         if (pair.size() > MAX_FIELD_BYTES) return 3;
         const auto sep = pair.find('\x1f');
-        if (sep != std::string::npos && lower_copy(pair.substr(0, sep)) != lower_copy(pair.substr(sep + 1))) {
-            std::cout << "0\n";
-            return 0;
+        if (sep != std::string::npos) {
+            const auto expected = lower_copy(pair.substr(0, sep));
+            const auto actual = lower_copy(pair.substr(sep + 1));
+            if (expected.rfind("contains:", 0) == 0) {
+                if (actual.find(expected.substr(9)) == std::string::npos) {
+                    std::cout << "0\n";
+                    return 0;
+                }
+            } else if (expected != actual) {
+                std::cout << "0\n";
+                return 0;
+            }
         }
     }
     std::cout << "1\n";

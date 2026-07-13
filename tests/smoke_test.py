@@ -106,6 +106,14 @@ def test_detection_rules_match_expected_events() -> None:
     }
     assert not [rule["name"] for rule in rules if detector.matches_rule(benign_event, rule)]
 
+    encoded_rule = {
+        "name": "Encoded Command Field Match",
+        "event": "process_create",
+        "when": {"field_contains": {"cmd": "-enc"}},
+    }
+    assert detector.matches_rule(powershell_event, encoded_rule)
+    assert not detector.matches_rule(benign_event, encoded_rule)
+
 
 def test_api_shapes_hosts_alerts_timeline_and_process_tree() -> None:
     api = load_module("sentinelx_api", ROOT / "api-backend" / "app.py")

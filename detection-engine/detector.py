@@ -55,6 +55,10 @@ def _matches_rule_cpp(event: dict[str, Any], rule: dict[str, Any]) -> bool | Non
         f"{str(expected)}\x1f{str(data.get(key, ''))}"
         for key, expected in (when.get("field_equals") or {}).items()
     ]
+    pairs.extend(
+        f"contains:{str(expected)}\x1f{str(data.get(key, ''))}"
+        for key, expected in (when.get("field_contains") or {}).items()
+    )
     needles = "\x1f".join(str(item) for item in when.get("contains_any", [])) or "-"
     payload = "\n".join(
         [
@@ -98,6 +102,9 @@ def matches_rule(event: dict[str, Any], rule: dict[str, Any]) -> bool:
 
     for key, expected in (when.get("field_equals") or {}).items():
         if str(data.get(key, "")).lower() != str(expected).lower():
+            return False
+    for key, expected in (when.get("field_contains") or {}).items():
+        if str(expected).lower() not in str(data.get(key, "")).lower():
             return False
 
     needles = [str(item).lower() for item in when.get("contains_any", [])]
