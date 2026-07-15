@@ -23,9 +23,53 @@ CPP_FORCE_ENV = "SENTINELX_FORCE_CPP"
 CPP_HAYSTACK_THRESHOLD_BYTES = 4096
 
 
+def _sigma_rule_to_internal(rule: dict[str, Any]) -> dict[str, Any] | None:
+    detection = rule.get("detection")
+    if not isinstance(detection, dict):
+        return None
+    selection = detection.get("selection")
+    if not isinstance(selection, dict):
+        return None
+    when: dict[str, Any] = {}
+    process = selection.get("Image") or selection.get("process") or selection.get("ProcessName")
+    if process:
+        when["process"] = str(process).split("\\")[-1]
+    contains: dict[str, str] = {}
+    for key, value in selection.items():
+        if key.endswith("|contains"):
+            contains[key.split("|", 1)[0].lower()] = str(value)
+    if contains:
+        field_map = {"commandline": "cmd", "image": "name"}
+        when["field_contains"] = {field_map.get(k.lower(), k.lower()): v for k, v in contains.items()}
+    if not when:
+        return None
+    return {
+        "name": rule.get("title") or rule.get("name") or "Imported Sigma Rule",
+        "event": "process_create",
+        "when": when,
+        "score": int(rule.get("level_score", 50)),
+        "severity": rule.get("level", "medium"),
+    }
+
+
+def normalize_rules(raw_rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    for rule in raw_rules:
+        if "when" in rule:
+            normalized.append(rule)
+            continue
+        converted = _sigma_rule_to_internal(rule)
+        if converted:
+            normalized.append(converted)
+    return normalized
+
+
 def load_rules() -> list[dict[str, Any]]:
     with RULES_PATH.open("r", encoding="utf-8") as fh:
-        return yaml.safe_load(fh) or []
+        loaded = yaml.safe_load(fh) or []
+    if isinstance(loaded, dict):
+        loaded = [loaded]
+    return normalize_rules(loaded)
 
 
 def utc_from_epoch(ts: int) -> datetime:

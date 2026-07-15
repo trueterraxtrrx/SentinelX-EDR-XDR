@@ -114,6 +114,15 @@ def test_detection_rules_match_expected_events() -> None:
     assert detector.matches_rule(powershell_event, encoded_rule)
     assert not detector.matches_rule(benign_event, encoded_rule)
 
+    sigma_rule = {
+        "title": "Sigma Encoded PowerShell",
+        "detection": {"selection": {"Image": "powershell.exe", "CommandLine|contains": "-enc"}},
+        "level": "high",
+    }
+    imported = detector.normalize_rules([sigma_rule])
+    assert imported[0]["when"]["field_contains"]["cmd"] == "-enc"
+    assert detector.matches_rule(powershell_event, imported[0])
+
 
 def test_api_shapes_hosts_alerts_timeline_and_process_tree() -> None:
     api = load_module("sentinelx_api", ROOT / "api-backend" / "app.py")
