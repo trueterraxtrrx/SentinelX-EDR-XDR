@@ -122,6 +122,11 @@ def test_detection_rules_match_expected_events() -> None:
     imported = detector.normalize_rules([sigma_rule])
     assert imported[0]["when"]["field_contains"]["cmd"] == "-enc"
     assert detector.matches_rule(powershell_event, imported[0])
+    assert detector.validate_rules([encoded_rule, sigma_rule, {"title": "broken"}]) == {
+        "internal": 1,
+        "imported": 1,
+        "rejected": 1,
+    }
 
 
 def test_api_shapes_hosts_alerts_timeline_and_process_tree() -> None:

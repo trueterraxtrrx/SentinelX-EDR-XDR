@@ -90,6 +90,7 @@ SentinelX is defensive-only. It is for authorized telemetry, detection and SOC r
 - C++ rule matcher path with forced-path smoke coverage and Python fallback.
 - C++ rule matcher support for field substring conditions used by Sigma-style rules.
 - Sigma-style YAML rule import normalization for process and command-line detections.
+- Rule validation summary for internal, imported and rejected detection content.
 - Gateway/API health checks, Redis/DB timeout hardening and production CORS guardrails.
 - Smoke tests covering core public demo services.
 
@@ -97,7 +98,7 @@ SentinelX is defensive-only. It is for authorized telemetry, detection and SOC r
 
 - Richer endpoint demo fixtures and hosted dashboard guardrails.
 - Host detail, process context and incident queue screens.
-- Sigma-style rule validation UI and import error reporting.
+- Sigma-style rule validation UI, import error reporting and per-rule diagnostics.
 - KRYNEX Nexus product registry integration after the demo surface is stable.
 
 ## KRYNEX Ecosystem

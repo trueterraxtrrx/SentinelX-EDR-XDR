@@ -64,6 +64,20 @@ def normalize_rules(raw_rules: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return normalized
 
 
+def validate_rules(raw_rules: list[dict[str, Any]]) -> dict[str, int]:
+    internal = 0
+    imported = 0
+    rejected = 0
+    for rule in raw_rules:
+        if "when" in rule:
+            internal += 1
+        elif _sigma_rule_to_internal(rule):
+            imported += 1
+        else:
+            rejected += 1
+    return {"internal": internal, "imported": imported, "rejected": rejected}
+
+
 def load_rules() -> list[dict[str, Any]]:
     with RULES_PATH.open("r", encoding="utf-8") as fh:
         loaded = yaml.safe_load(fh) or []
