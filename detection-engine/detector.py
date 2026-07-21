@@ -78,6 +78,16 @@ def validate_rules(raw_rules: list[dict[str, Any]]) -> dict[str, int]:
     return {"internal": internal, "imported": imported, "rejected": rejected}
 
 
+def summarize_rule_severity(rules: list[dict[str, Any]]) -> dict[str, int]:
+    summary = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+    for rule in rules:
+        severity = str(rule.get("severity") or rule.get("level") or "medium").lower()
+        if severity not in summary:
+            severity = "medium"
+        summary[severity] += 1
+    return summary
+
+
 def load_rules() -> list[dict[str, Any]]:
     with RULES_PATH.open("r", encoding="utf-8") as fh:
         loaded = yaml.safe_load(fh) or []

@@ -127,6 +127,7 @@ def test_detection_rules_match_expected_events() -> None:
         "imported": 1,
         "rejected": 1,
     }
+    assert detector.summarize_rule_severity(imported + [encoded_rule])["high"] == 1
 
 
 def test_api_shapes_hosts_alerts_timeline_and_process_tree() -> None:
