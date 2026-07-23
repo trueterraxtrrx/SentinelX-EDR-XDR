@@ -88,6 +88,14 @@ def summarize_rule_severity(rules: list[dict[str, Any]]) -> dict[str, int]:
     return summary
 
 
+def summarize_rule_events(rules: list[dict[str, Any]]) -> dict[str, int]:
+    summary: dict[str, int] = {}
+    for rule in rules:
+        event = str(rule.get("event") or "unknown")
+        summary[event] = summary.get(event, 0) + 1
+    return summary
+
+
 def load_rules() -> list[dict[str, Any]]:
     with RULES_PATH.open("r", encoding="utf-8") as fh:
         loaded = yaml.safe_load(fh) or []
