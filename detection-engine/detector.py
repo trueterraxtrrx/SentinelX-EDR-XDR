@@ -21,6 +21,7 @@ RULES_PATH = Path(os.getenv("RULES_PATH", "rules/default.yml"))
 CPP_RULE_MATCHER_ENV = "SENTINELX_CPP_RULE_MATCHER"
 CPP_FORCE_ENV = "SENTINELX_FORCE_CPP"
 CPP_HAYSTACK_THRESHOLD_BYTES = 4096
+STALE_MESSAGE_IDLE_MS = int(os.getenv("STALE_MESSAGE_IDLE_MS", "60000"))
 
 
 def _sigma_rule_to_internal(rule: dict[str, Any]) -> dict[str, Any] | None:
@@ -198,6 +199,31 @@ def ensure_group(redis: Redis) -> None:
             raise
 
 
+def reclaim_stale_messages(redis: Redis) -> list[tuple[str, dict[str, str]]]:
+    """Recover pending-entries-list messages left unacked by a crashed/slow consumer.
+
+    Without this, a process that dies mid-batch (after xreadgroup but before xack)
+    leaves its claimed messages stuck in the group's PEL forever, since the main
+    loop only ever reads new messages via xreadgroup(">") and never revisits them.
+    """
+    reclaimed: list[tuple[str, dict[str, str]]] = []
+    start_id = "0-0"
+    while True:
+        next_start_id, claimed_messages, _deleted_ids = redis.xautoclaim(
+            EVENT_STREAM,
+            CONSUMER_GROUP,
+            CONSUMER_NAME,
+            min_idle_time=STALE_MESSAGE_IDLE_MS,
+            start_id=start_id,
+            count=50,
+        )
+        reclaimed.extend(claimed_messages)
+        if next_start_id in ("0-0", 0) or not claimed_messages:
+            break
+        start_id = next_start_id
+    return reclaimed
+
+
 def store_event(conn: psycopg.Connection, event: dict[str, Any]) -> int:
     ts = utc_from_epoch(int(event["ts"]))
     host = event["host"]
@@ -274,6 +300,17 @@ def store_alert(conn: psycopg.Connection, event: dict[str, Any], event_id: int, 
         )
 
 
+def process_message(
+    conn: psycopg.Connection, redis: Redis, rules: list[dict[str, Any]], message_id: str, fields: dict[str, str]
+) -> None:
+    event = json.loads(fields["payload"])
+    event_id = store_event(conn, event)
+    for rule in rules:
+        if matches_rule(event, rule):
+            store_alert(conn, event, event_id, rule)
+    redis.xack(EVENT_STREAM, CONSUMER_GROUP, message_id)
+
+
 def main() -> None:
     rules = load_rules()
     redis = Redis.from_url(
@@ -288,6 +325,11 @@ def main() -> None:
     while True:
         try:
             with psycopg.connect(DATABASE_URL, autocommit=True, connect_timeout=3) as conn:
+                # Recover messages left unacked in the PEL by a consumer that
+                # crashed or errored mid-batch before this iteration's normal read.
+                for message_id, fields in reclaim_stale_messages(redis):
+                    process_message(conn, redis, rules, message_id, fields)
+
                 messages = redis.xreadgroup(
                     CONSUMER_GROUP,
                     CONSUMER_NAME,
@@ -297,12 +339,7 @@ def main() -> None:
                 )
                 for _, stream_messages in messages:
                     for message_id, fields in stream_messages:
-                        event = json.loads(fields["payload"])
-                        event_id = store_event(conn, event)
-                        for rule in rules:
-                            if matches_rule(event, rule):
-                                store_alert(conn, event, event_id, rule)
-                        redis.xack(EVENT_STREAM, CONSUMER_GROUP, message_id)
+                        process_message(conn, redis, rules, message_id, fields)
         except Exception as exc:
             print(f"detector error: {exc}", flush=True)
             time.sleep(3)

@@ -94,6 +94,7 @@ SentinelX is defensive-only. It is for authorized telemetry, detection and SOC r
 - Rule severity summary for dashboard import previews and detection-pack review.
 - Rule event summary for process, network and future telemetry coverage previews.
 - Gateway/API health checks, Redis/DB timeout hardening and production CORS guardrails.
+- Detection engine stale-message reclaim (`xautoclaim`) so events left unacked by a crashed or errored consumer are recovered instead of silently lost.
 - Smoke tests covering core public demo services.
 
 ### Will be implemented
